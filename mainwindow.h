@@ -9,6 +9,11 @@
 #include <QFile>
 #include <QTimer>
 #include <QByteArray>
+#include <QDebug>
+#include <QUdpSocket>
+#include <QHostAddress>
+#include <QHostInfo>
+#include <QNetworkInterface>
 
 #define	SYNCHRO                                 0x02
 #define UART_ADDR                               0x0A
@@ -50,6 +55,8 @@ typedef union{
     uint8_t 	cstd[8];
 }long_long_std_union;
 
+static const int decimalMass[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -62,6 +69,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    QString getHostIP();
+
 private:
     Ui::MainWindow *ui;
 
@@ -71,6 +80,12 @@ private:
     uint8_t                 com_mode;
     uint8_t                 uart_command;
     QByteArray              ba;
+    QUdpSocket              *socket;
+    QString                 hostIPAddr;
+    uint                    hostPort;
+    QString                 clientIPAddr;
+    uint                    clientPort;
+
     char                    CRC = 0;
 
 private slots:
@@ -79,5 +94,9 @@ private slots:
     void readData();
     void on_com_refresh_button_clicked();
     void timer_echo_timeout();
+    void on_sendButton_clicked();
+    void udpRead();
+    void on_udpSendButton_clicked();
+    void on_setSocketButton_clicked();
 };
 #endif // MAINWINDOW_H
